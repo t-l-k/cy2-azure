@@ -13,11 +13,9 @@ test('should use explicit path', async () => {
 
   expect(result.configFilePath).toMatch('explicitPath/config/app.yml');
   expect(result.backupConfigFilePath).toMatch('explicitPath/config/_app.yml');
-  expect(result.uploadLibFilePath).toMatch('explicitPath/lib/upload.js');
-  expect(result.backupUploadLibFilePath).toMatch('explicitPath/lib/_upload.js');
-  expect(fs.statSync).toHaveBeenCalledWith(
-    expect.stringMatching('explicitPath')
-  );
+  expect(result.uploadLibFilePath).toMatch('explicitPath/lib/cloud/upload.js');
+  expect(result.backupUploadLibFilePath).toMatch('explicitPath/lib/cloud/_upload.js');
+  expect(fs.statSync).toHaveBeenCalledWith(expect.stringMatching('explicitPath'));
 });
 
 test('should use state-module', async () => {
@@ -29,9 +27,7 @@ test('should use state-module', async () => {
 });
 
 test('should use getConfigFilesPaths_cli', async () => {
-  (getConfigFilesPaths_stateModule as jest.Mock).mockRejectedValueOnce(
-    new Error('oh!')
-  );
+  (getConfigFilesPaths_stateModule as jest.Mock).mockRejectedValueOnce(new Error('oh!'));
 
   await getConfigFilesPaths();
 

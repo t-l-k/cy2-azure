@@ -9,22 +9,10 @@ export type ConfigFiles = {
   backupUploadLibFilePath: string;
 };
 export const getConfigFiles = (pkgRoot: string): ConfigFiles => {
-  const configFilePath = path.resolve(
-    pkgRoot,
-    'packages/server/config/app.yml'
-  );
-  const backupConfigFilePath = path.resolve(
-    pkgRoot,
-    'packages/server/config/_app.yml'
-  );
-  const uploadLibFilePath = path.resolve(
-  pkgRoot,
-  'packages/server/lib/upload.js'
-  );
-  const backupUploadLibFilePath = path.resolve(
-  pkgRoot,
-  'packages/server/lib/_upload.js'
-  );
+  const configFilePath = path.resolve(pkgRoot, 'packages/server/config/app.yml');
+  const backupConfigFilePath = path.resolve(pkgRoot, 'packages/server/config/_app.yml');
+  const uploadLibFilePath = path.resolve(pkgRoot, 'packages/server/lib/cloud/upload.js');
+  const backupUploadLibFilePath = path.resolve(pkgRoot, 'packages/server/lib/cloud/_upload.js');
 
   debug('Cypress configFilePath: %s', configFilePath);
   return {

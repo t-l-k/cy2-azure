@@ -7,33 +7,24 @@ import { getConfigFilesPaths_cli } from './discovery-cli';
 import { getConfigFromElectronBinary } from './discovery-run-binary';
 import { getConfigFilesPaths_stateModule } from './discovery-state-module';
 
-export async function getConfigFilesPaths(
-  cypressConfigFilePath: string | null = null
-): Promise<ConfigFiles> {
+export async function getConfigFilesPaths(cypressConfigFilePath: string | null = null): Promise<ConfigFiles> {
   if (typeof cypressConfigFilePath === 'string') {
-    const explicitPath = path.resolve(
-      path.normalize(cypressConfigFilePath.trim())
-    );
-    debug(
-      'Explicit package path provided via CYPRESS_PACKAGE_CONFIG_PATH: %s',
-      explicitPath
-    );
+    const explicitPath = path.resolve(path.normalize(cypressConfigFilePath.trim()));
+    debug('Explicit package path provided via CYPRESS_PACKAGE_CONFIG_PATH: %s', explicitPath);
 
     // verify the path
     fs.statSync(explicitPath);
     return {
       configFilePath: explicitPath,
       backupConfigFilePath: explicitPath.replace('app.yml', '_app.yml'),
-      uploadLibFilePath: explicitPath.replace('config/app.yml', 'lib/upload.js'),
-      backupUploadLibFilePath: explicitPath.replace('config/app.yml', 'lib/_upload.js'),
+      uploadLibFilePath: explicitPath.replace('config/app.yml', 'lib/cloud/upload.js'),
+      backupUploadLibFilePath: explicitPath.replace('config/app.yml', 'lib/cloud/_upload.js'),
     };
   }
 
   if (typeof process.env.CYPRESS_RUN_BINARY === 'string') {
     debug('CYPRESS_RUN_BINARY: %s', process.env.CYPRESS_RUN_BINARY);
-    return tryAll(() =>
-      getConfigFromElectronBinary(process.env.CYPRESS_RUN_BINARY as string)
-    );
+    return tryAll(() => getConfigFromElectronBinary(process.env.CYPRESS_RUN_BINARY as string));
   }
 
   return tryAll(getConfigFilesPaths_stateModule, getConfigFilesPaths_cli);

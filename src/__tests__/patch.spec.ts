@@ -10,7 +10,7 @@ const { getConfigFilesPaths } = require('../discovery');
 jest.mock('../discovery');
 
 const originalAppConfig = path.resolve(__dirname, './fixtures/config/app.yml');
-const originalUploadLib = path.resolve(__dirname, './fixtures/lib/upload.js');
+const originalUploadLib = path.resolve(__dirname, './fixtures/lib/cloud/upload.js');
 
 test('should patch', async () => {
   const seed = nanoid();
@@ -18,15 +18,9 @@ test('should patch', async () => {
   const uploadLibFilename = `./fixtures/lib/__temp_fixture_${seed}`;
 
   const configFilePath = path.resolve(__dirname, `${appConfigFilename}.yml`);
-  const backupConfigFilePath = path.resolve(
-  __dirname,
-  `${appConfigFilename}_backup.yml`
-  );
+  const backupConfigFilePath = path.resolve(__dirname, `${appConfigFilename}_backup.yml`);
   const uploadLibFilePath = path.resolve(__dirname, `${uploadLibFilename}.js`);
-  const backupUploadLibFilePath = path.resolve(
-  __dirname,
-  `${uploadLibFilename}_backup.js`
-  );
+  const backupUploadLibFilePath = path.resolve(__dirname, `${uploadLibFilename}_backup.js`);
 
   fs.copyFileSync(originalAppConfig, configFilePath);
   fs.copyFileSync(originalUploadLib, uploadLibFilePath);
@@ -45,6 +39,6 @@ test('should patch', async () => {
   expect(fs.readFileSync(backupConfigFilePath, 'utf8')).toEqual(fs.readFileSync(originalAppConfig, 'utf8')); // Check backup
 
   const uploadJS = fs.readFileSync(uploadLibFilePath, 'utf8');
-  expect(uploadJS).toContain('body: buf, headers: { "x-ms-blob-type": "BlockBlob" },') // Check patched file
+  expect(uploadJS).toContain('body: buf, headers: { "x-ms-blob-type": "BlockBlob" },'); // Check patched file
   expect(fs.readFileSync(backupUploadLibFilePath, 'utf8')).toEqual(fs.readFileSync(originalUploadLib, 'utf8')); // Check backup
 });
