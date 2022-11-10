@@ -1,10 +1,23 @@
 import cp from 'child_process';
-import path from 'path';
 import { platform } from 'os';
+import path from 'path';
 import { debug } from './debug';
 
 import { getCypressCLIBinPath } from './bin-path';
 import { ConfigFiles, getConfigFiles } from "./files";
+
+export async function getServerInitPath_cli() {
+  debug('Trying discovery via cypress CLI');
+  const cliBinPath = await getCypressCLIBinPath();
+
+  const basePath = await getBasePath(cliBinPath);
+  debug('Cypress base path is: %s', basePath);
+
+  const version = await getCypressVersion(cliBinPath);
+  debug('Cypress version is: %s', version);
+
+  return path.resolve(basePath, version, getPackagedPath(), 'index.js');
+}
 
 export async function getConfigFilesPaths_cli(): Promise<ConfigFiles> {
   debug('Trying discovery via cypress CLI');

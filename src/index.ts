@@ -1,15 +1,37 @@
+import { runInContext } from './context';
 import * as lib from './patch';
 
-const DEFAULT_OVERRIDE_URL = 'https://api.cypress.io/';
-
-export const patch = lib.patch;
-
-export const run = async (
-  cypressAPIUrl = DEFAULT_OVERRIDE_URL,
-  label = 'cy2',
-  cypressConfigFilePath = process.env.CYPRESS_PACKAGE_CONFIG_PATH
+/**
+ * Patch cypress for subsequent programmatic invocation.
+ * The actual dashboard url is set via process.env.CYPRESS_API_URL.
+ * For SorryCypress it should point to the director service.
+ *
+ * @param cypressPackagePath - path to cypress npm package enyty point
+ */
+export const patch = async (
+  cypressPackagePath: string = require.resolve('cypress')
 ) => {
-  await lib.patch(cypressAPIUrl, cypressConfigFilePath);
-  console.log(`[${label}] Running cypress with API URL: ${cypressAPIUrl}`);
-  await lib.run();
+  await runInContext(
+    () => lib.patchServerInit(`${__dirname}/injected.js`),
+    new Map().set('cypressPackagePath', cypressPackagePath)
+  );
+};
+
+export const run = async (label: string = 'cy2') => {
+  console.log(
+    `[${label}] Running cypress with API URL: ${process.env.CYPRESS_API_URL}`
+  );
+  await lib.patchServerInit(`${__dirname}/injected.js`);
+  const childProcess = await lib.run();
+  childProcess.on('exit', (code) => process.exit(code ?? 1));
+};
+
+export const inject = async (
+  injectedAbsolutePath: string,
+  cypressPackagePath: string = require.resolve('cypress')
+) => {
+  await runInContext(
+    () => lib.patchServerInit(injectedAbsolutePath),
+    new Map().set('cypressPackagePath', cypressPackagePath)
+  );
 };
