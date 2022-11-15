@@ -10,6 +10,7 @@
     "url": "https://github.com/sorry-cypress/cy2-azure.git"
   },
   "scripts": {
+    "prepare": "npm run build",
     "build": "run-s tsc swc",
     "dev": "run-p watch:*",
     "test": "jest",
