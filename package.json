@@ -11,6 +11,7 @@
   },
   "scripts": {
     "prepare": "npm run build",
+    "prepack": "npm run build",
     "build": "run-s tsc swc",
     "dev": "run-p watch:*",
     "test": "jest",
